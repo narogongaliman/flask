@@ -34,6 +34,7 @@
             background-color: #03543b;
         }
     </style>
+    <script src='https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js'></script>
 </head>
 <body>
 
@@ -53,7 +54,8 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Content</label>
-            <textarea class="form-control" name="content" rows="4" required></textarea>
+            <textarea class='form-control' name='content' id='editor' rows='3' required></textarea>
+            <!--–<textarea class="form-control" name="content" rows="4" required></textarea>–-->
         </div>
         <button type="submit" class="btn btn-green">Add Post</button>
     </form>
@@ -64,13 +66,15 @@
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
                 <strong>{{ post.title }}</strong>
-                <p>{{ post.content }}</p>
+                <p class='card-text'>{{ post.content|safe }}</p>
             </div>
             <a href="{{ url_for('delete', id=post.id) }}" class="btn btn-danger btn-sm">Delete</a>
         </li>
         {% endfor %}
     </ul>
 </div>
-
+<script>
+    CKEDITOR.replace('editor');
+</script>
 </body>
 </html>

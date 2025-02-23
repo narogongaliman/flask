@@ -48,7 +48,7 @@
     {% for post in posts %}
     <div class="post-card">
         <h4 class="text-success">{{ post.title }}</h4>
-        <p>{{ post.content }}</p>
+        <p class='card-text'>{{ post.content|safe }}</p>
     </div>
     {% endfor %}
 </div>
