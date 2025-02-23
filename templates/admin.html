@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #eef2f3;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar {
+            background-color: #046c4e !important;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .btn-green {
+            background-color: #046c4e;
+            color: white;
+        }
+        .btn-green:hover {
+            background-color: #03543b;
+        }
+    </style>
+    <!-- Add CKEditor script in the <head> -->
+    {{ ckeditor.load() }}
+    {{ ckeditor.config(name='content') }}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 class="text-center text-success mb-4">Admin Dashboard</h2>
+
+    <ul class="nav nav-tabs" id="adminTabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#posts">Manage Posts</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#events">Manage Events</a>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+        <!-- Posts Tab -->
+        <div class="tab-pane fade show active" id="posts">
+            <h3>Add Post</h3>
+            <form method="POST" action="{{ url_for('add_post') }}">
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Content</label>
+                    <textarea class="form-control" name="content" id="editor" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-green">Add Post</button>
+            </form>
+
+            <h3 class="mt-4">Existing Posts</h3>
+            <ul class="list-group">
+                {% for post in posts %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ post.title }}</strong>
+                        <p class='card-text'>{{ post.content|safe }}</p>
+                    </div>
+                    <a href="{{ url_for('delete', id=post.id) }}" class="btn btn-danger btn-sm">Delete</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Events Tab -->
+        <div class="tab-pane fade" id="events">
+            <h3>Add Event</h3>
+            <form method="POST" action="{{ url_for('add_event') }}">
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" name="date" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" id="editor2" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-green">Add Event</button>
+            </form>
+
+            <h3 class="mt-4">Existing Events</h3>
+            <ul class="list-group">
+                {% for event in events %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ event.title }} - {{ event.date }}</strong>
+                        <p class='card-text'>{{ event.description|safe }}</p>
+                    </div>
+                    <a href="{{ url_for('delete_event', id=event.id) }}" class="btn btn-danger btn-sm">Delete</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    CKEDITOR.replace('editor');  // For Posts
+    CKEDITOR.replace('editor2'); // For Events
+</script>
+
+</body>
+</html>
