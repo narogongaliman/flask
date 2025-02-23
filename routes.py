@@ -1,17 +1,26 @@
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import render_template, request, redirect, url_for, jsonify, send_from_directory
 from app import app, db
 from models import Post, Event
 from werkzeug.utils import secure_filename
 import os
 
 # Configure upload folder for images
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'static/uploads')
+#UPLOAD_FOLDER = os.path.join(os.getcwd(), 'static/uploads')
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static/uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Helper function to check allowed file extensions
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/check-static/<path:filename>')
+def check_static(filename):
+    static_path = UPLOAD_FOLDER
+    if os.path.exists(os.path.join(static_path, filename)):
+        return send_from_directory(static_path, filename)
+    else:
+        return "Static file not found", 404
 
 @app.route('/')
 def index():
