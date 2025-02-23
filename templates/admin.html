@@ -91,7 +91,7 @@
         <!-- Events Tab -->
         <div class="tab-pane fade" id="events">
             <h3>Add Event</h3>
-            <form method="POST" action="{{ url_for('add_event') }}">
+            <form method="POST" action="{{ url_for('add_event') }}" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Title</label>
                     <input type="text" class="form-control" name="title" required>
@@ -104,6 +104,10 @@
                     <label class="form-label">Description</label>
                     <textarea class="form-control" name="description" id="editor2" required></textarea>
                 </div>
+                <div class="mb-3">
+                    <label for="image">Image:</label>
+                    <input type="file" id="image" name="image" required><br><br>
+                </div>
                 <button type="submit" class="btn btn-green">Add Event</button>
             </form>
 
@@ -114,6 +118,7 @@
                     <div>
                         <strong>{{ event.title }} - {{ event.date }}</strong>
                         <p class='card-text'>{{ event.description|safe }}</p>
+                        <img src="{{ url_for('static', filename='uploads/' + event.image_url) }}" alt="Event Image" width="200">
                     </div>
                     <a href="{{ url_for('delete_event', id=event.id) }}" class="btn btn-danger btn-sm">Delete</a>
                 </li>

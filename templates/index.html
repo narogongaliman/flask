@@ -74,6 +74,7 @@
                     </div>
                     <div class="modal-body">
                         <p id="eventDescription"></p>
+                        <img id="eventImage" src="{{ url_for('static', filename='uploads/') }}" alt="Event Image" style="max-width: 100%;">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -95,8 +96,10 @@
             initialView: 'dayGridMonth',
             events: '/api/events',  // Fetch events from Flask API
             eventClick: function(info) {
+                console.log(info.event.extendedProps.image_url);
                 document.getElementById('eventTitle').innerText = info.event.title;
                 document.getElementById('eventDescription').innerHTML = info.event.extendedProps.description; // Uses |safe
+                document.getElementById('eventImage').src =  document.getElementById('eventImage').src + info.event.extendedProps.image_url;
                 var modal = new bootstrap.Modal(document.getElementById('eventModal'));
                 modal.show();
             }

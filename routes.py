@@ -1,6 +1,17 @@
 from flask import render_template, request, redirect, url_for, jsonify
 from app import app, db
 from models import Post, Event
+from werkzeug.utils import secure_filename
+import os
+
+# Configure upload folder for images
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Helper function to check allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def index():
@@ -11,7 +22,7 @@ def index():
 @app.route('/api/events')
 def get_events():
     events = Event.query.all()
-    events_list = [{"title": e.title, "start": e.date, "description": e.description} for e in events]
+    events_list = [{"title": e.title, "start": e.date, "description": e.description, "image_url": e.image_url} for e in events]
     return jsonify(events_list)
 
 @app.route('/admin', methods=['GET'])
@@ -34,9 +45,16 @@ def add_event():
     title = request.form['title']
     date = request.form['date']
     description = request.form['description']
-    new_event = Event(title=title, date=date, description=description)
-    db.session.add(new_event)
-    db.session.commit()
+    image = request.files['image']
+
+    # Save the image file if it's allowed
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        new_event = Event(title=title, date=date, description=description, image_url=filename)
+        db.session.add(new_event)
+        db.session.commit()
     return redirect(url_for('admin'))
 
 @app.route('/delete/<int:id>')
