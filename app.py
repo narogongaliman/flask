@@ -1,28 +1,12 @@
-from flask import Flask, jsonify
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mosque.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-@app.route('/')
-def home():
-    return jsonify({'message': 'Hello, World! This is a Flask API.'})
-
-@app.route('/status')
-def status():
-    return jsonify({'status': 'running'})
+from routes import *
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-from flask import Flask, jsonify
-
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return jsonify({'message': 'Hello, World! This is a Flask API.'})
-
-@app.route('/status')
-def status():
-    return jsonify({'status': 'running'})
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
